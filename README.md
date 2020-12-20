@@ -134,6 +134,10 @@ Overall, the accuracy metrics are similar for each model, with some performing s
 
 As seen from the confusion matrices, the different models that we analyzed performed the best for classifying the laying action, and the actions that they had worse classification accuracies were for sitting and standing. We believe that this is because the dataset contains accelerations of the subjects, so sitting and standing is more difficult to interpret and differentiate for our models since the two actions are both stationary. The subjects also had their posture in an upright position, which may have contributed to the poorer performance of our models in these aspects as well.
 
+### Future Work
+
+The methods proposed in this project are promising but the data used is outdated. In the future we'd like to explore data from more recent wearable devices, tweaking the number of readings per timestep (128 may not be optimal), and expanding the activity classes.
+
 ### Citations
 
 1. Chetty, Girija, Matthew White, and Farnaz Akther. "Smartphone based data mining for human activity recognition." Procedia Computer Science 46 (2015): 1181-1187.
