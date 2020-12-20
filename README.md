@@ -92,6 +92,16 @@ Bidirectional LSTMs analyze an input sequence from both directions - going forwa
 
 Bidirectional properties on human activity data was explored by both Hernandez et al and Yu et al where they were able to achieve almost 93% average accuracy in classifying the six types of activities in the dataset. Bidirectional LSTMs are often combined with deep, stacked LSTMs to further improve performance.
 
+### Results
+
+To improve performance on a base LSTM various hyperparameters such as number of hidden units in the LSTM, epochs, and dropout level were tuned. LSTMs use a hidden state to track sequential dependencies in the input, our model uses dropout to prevent overfitting, and number of epochs is used to determine how long to train the model for. Models were trained on Google Colab with GPU support where the average epoch took about 1 second, so testing over a wide range of epochs was inexpensive, taking at most 10 minutes. We tested average accuracy over various hyperparameter combinations to find that 150 hidden units, trained over 512 epochs with a 75% dropout level produced the best results.
+
+![LSTM Accuracy Over Unit Epoch](/figures/LSTM_accuracy_over_unit_epoch.png)
+
+![LSTM Accuracy Over Dropout](/figures/LSTM_accuracy_over_dropout.png)
+
+![LSTM Accuracy Over Epoch](/figures/LSTM_accuracy_over_epoch.png)
+
 ### Citations
 
 1. Chetty, Girija, Matthew White, and Farnaz Akther. "Smartphone based data mining for human activity recognition." Procedia Computer Science 46 (2015): 1181-1187.
