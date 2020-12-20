@@ -15,6 +15,27 @@ This project uses Google Colaboratory to run the code and Google Drive to store 
 
 The project runs on Python 3 also requires the following libraries: tensorflow, keras, sklearn, numpy, pandas, matplotlib, and seaborn. Dependencies do not need to be installed if running the notebook on Colab.
 
+### Background
+
+This section will provide some background on Recurrent Neural Networks (RNNs), because they are good at understanding time series data and this project uses RNNs to classify the sensor readings. RNNs are different from other types of neural networks in that they account for the dependencies between inputs and are particularly useful in working with sequential data. Most neural networks assume inputs are independent of each other, which doesn't work for sequential data such as a sentence, where previous words can affect future words in the sentence.
+
+The "recurrent" portion of an RNN refers to the process of applying the same operations on multiple inputs over time, allowing the RNN to retain historical information in the sequence and account for time dependencies.
+
+![RNN visualization](/figures/RNN_diagram.png)
+
+Referring to the diagram above, a new input, x, is given to the model at each timestep, t. The model maintains a hidden state, s, which it uses to update the weights, W, U, and V, and output a new prediction, o, at each timestep. This diagram shows the RNN "unfolded" so the reader can view the operations at each timestep. The RNN uses the same weights across different inputs and timesteps to track historical dependencies in the sequence. A non-linear activation is applied on the output and optionally a bias term, B, is included. Refer to the equations below for how the hidden state and output are calculated at each timestep.
+
+S = max(XtU + SW + Bh, 0)
+Ot = max(SV + By, 0)
+
+In a standard neural network, back propagation is used to update weights in order to minimize the network's loss. This is done by minimizing the network's cost function and determining how much to tweak the network's weights. Standard networks optimize this process by using stochastic gradient descent, where the "amount" to tweak the weights is known as the gradients. 
+
+RNNs use a modified version of back propagation known as backpropagation through time (BPTT) where the error for each time step is calculated and accumulated backwards in time to update the weights. In this way, the reader can view each timestep as a different "layer" in the RNN.
+
+![BPTT visualization](/figures/BPTT_diagram.png)
+
+RNNs retain state across time to track sequential dependencies and are used commonly to analyze time series data. RNNs can also be used in supervised learning tasks to classify sequences of inputs. For example, let's say we want to classify tomorrow's weather as either rainy or not rainy depending on the last 10 days of precipitation, humidity, and UV index where we know how the weather was over the last 10 days. The input at each time step would be 3 variables (precipitation, humidity, and UV index), and the output would be a predicted class (rainy or not rainy). If we have thousands of sequences of 10-day data, we can feed each sequence individually into the network and use BPTT to update our weights in order to minimize the classification error. This way, we develop a network which can accurately predict if it is going to rain tomorrow or not.
+
 ### Related Work
 
 We used the University of California Irvine's (UCI) Human Activity Recognition (HAR) dataset, which was collected in 2012 as part of a research project to better understand human activities from smartphone sensor signals [9]. Since then, a variety of research on this dataset has been conducted to improve classification performance of activities from acceleration and velocity signals.
