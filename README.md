@@ -94,6 +94,8 @@ Bidirectional properties on human activity data was explored by both Hernandez e
 
 ### Results
 
+#### LSTMs
+
 To improve performance on a base LSTM various hyperparameters such as number of hidden units in the LSTM, epochs, and dropout level were tuned. LSTMs use a hidden state to track sequential dependencies in the input, our model uses dropout to prevent overfitting, and number of epochs is used to determine how long to train the model for. Models were trained on Google Colab with GPU support where the average epoch took about 1 second, so testing over a wide range of epochs was inexpensive, taking at most 10 minutes. We tested average accuracy over various hyperparameter combinations to find that 150 hidden units, trained over 512 epochs with a 75% dropout level produced the best results.
 
 ![LSTM Accuracy Over Unit Epoch](/figures/LSTM_accuracy_over_unit_epoch.png)
@@ -101,6 +103,36 @@ To improve performance on a base LSTM various hyperparameters such as number of 
 ![LSTM Accuracy Over Dropout](/figures/LSTM_accuracy_over_dropout.png)
 
 ![LSTM Accuracy Over Epoch](/figures/LSTM_accuracy_over_epoch.png)
+
+#### Stacked LSTMs
+
+Our Stacked LSTM architecture was similar to that of Ullah et al's, applying a dense layer with ReLu activation to pre-process data before feeding the input sequence to various LSTM layers, with a final fully connected and softmax layer to produce predictions. The first dense layer is meant to normalize the signals before the LSTM, as recommended in Ullah et al s work. The input sequence to the first LSTM is a 128x100 vector instead of a 128x9, because of the initial activation layer. We experimented with a different number of hidden units and received similar results but were not able to reproduce the 93% accuracy cited in the paper. We experimented with 3-5 layers, getting the best average accuracy of 89.07% with five layers.
+
+![Stacked LSTM Architecture](/figures/stacked_LSTM_architecture.png)
+
+![Stacked LSTM Accuracy Over Depth](/figures/stacked_LSTM_accuracy_over_depth.png)
+
+Similar to Ullah's and Hernandez's work we found our model had the most difficulty classifying sitting and standing activities.
+
+![Stacked LSTM Confusion Matrix](/figures/stacked_LSTM_confusion_matrix.png)
+
+#### Bidirectional LSTMs
+
+As explained above, bidirectional LSTMs can look at future inputs in the sequence to help inform present decisions. We decided to explore these relationships with an added bidirectional layer to our deep LSTMs. Our bidirectional model contained between 1-3 LSTM layers with bidirectional dependencies, a dropout layer, one fully connected layer, and a final softmax layer to produce predictions. Training over 512 epochs, we found about the same average accuracy with 1 layer (87.04%) vs. 3 layers (87.48%). We thought that analyzing the input sequence from both directions would help improve performance but found slightly lower accuracy with this network.
+
+![BiRNN LSTM Architecture](/figures/biRNN_architecture.png)
+
+Similar to our other LSTMs the model had difficulty classifying sitting and standing activities.
+
+![BiRNN LSTM Confusion Matrix](/figures/biRNN_confusion_matrix.png)
+
+### Conclusion
+
+This project successfully applied various types of Recurrent neural network models in order to perform classification of the six different activities from the UCI Human Activity Recognition dataset.
+
+Overall, the accuracy metrics are similar for each model, with some performing slightly better than the others, and generally had accuracy values of around 90%. The stacked LSTM performed slightly better, but adding depth and bidirectional depedencies didn't improve performance by much. Although we were not able to reproduce accuracies listed in the cited works, we found similar results - models had difficulties differentiating sitting and standing, depth beyond 5 layers hurt performance, and bidirectionality did not have a large impact.
+
+As seen from the confusion matrices, the different models that we analyzed performed the best for classifying the laying action, and the actions that they had worse classification accuracies were for sitting and standing. We believe that this is because the dataset contains accelerations of the subjects, so sitting and standing is more difficult to interpret and differentiate for our models since the two actions are both stationary. The subjects also had their posture in an upright position, which may have contributed to the poorer performance of our models in these aspects as well.
 
 ### Citations
 
