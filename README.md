@@ -66,6 +66,32 @@ Each sample consists of three measurements: total acceleration, body acceleratio
 1. Train: 7,352 x 128 x 9
 2. Test: 2,947 x 128 x 9
 
+### Methods
+
+In this project, we will be exploring multiple variations of recurrent neural networks to train and test the data that was mentioned. The models that we have chosen for this project are: basic LSTM, stacked LSTM, and bidirectional LSTM. Our models use a many to one prediction on the dataset. There are 9 inputs (x, y, z coordinates of the total acceleration, body acceleration, and gyro velocity), and the output is the classification of one of the six activities (walking, walking upstairs, walking downstairs, sitting, standing, laying down).
+
+#### LSTMs
+
+Basic RNNs suffer from short-term memory, which means that when a sequence becomes too long, it will be harder for the model to carry information from earlier timesteps. Basic RNNs will leave out information in the beginning, which is not ideal. The solution to this problem is the introduction of LSTMs. LSTMs have an internal hidden mechanism called gates that regulate the flow of information inputted into the model. These gates are able to learn which data in a sequence is important enough to keep and what to leave out. The cell state and its various gates (forget gate, input gate, output gate) are core concepts for the LSTM. Relevant information is transported through the cell state throughout the processing of the sequence. As information gets passed through, the neural network decides which information to keep and which to leave out. The risk of having vanishing gradients is also decreased. Basic LSTMs have a single hidden layer of LSTM units. They can support multiple parallel sequences of input data, such as the accelerometer and gyroscope data in our dataset.
+
+1. Input Gates: Updates the cell state
+2. Forget Gates: Decides what information to be saved and which to be left out
+3. Output Gates: Decides what the next hidden state should be
+
+#### Stacked LSTMs
+
+In the history of neural networks, many types of networks have seen improved performance by increasing depth, leading to the rise of deep neural networks. Depth is added to the network by adding intermediate nonlinear hidden layers between inputs and outputs, for example by adding many alternating convolution and pooling layers in a CNN. Increasing depth in the network allows deeper layers to further abstract information and learn higher-level features. For example, early layers in a CNN may extract edges while deeper layers extract fine-grained information specific to the image. This same concept has been explored for LSTMs as well to see if increasing depth leads to better performance.
+
+Pescanu et al explored different types of depth in an RNN and originally coined the term “Stacked LSTM” in 2014. They explored how depth exists in an RNN because each timestep can be seen as a layer in the network, but these connections are shallow in that “there exists no intermediate, nonlinear hidden layers” between timesteps. In order to introduce true depth into the network, they explored stacking multiple recurrent hidden layers on top of each other. In this model, LSTM layers are ordered sequentially, where each previous layer passes a sequence of values, one output per input timestep, to the next layer. This introduces intermediate nonlinear hidden layers between each recurrent unit so the network can focus on the data at different timescales.
+
+This method was explored by Graves, Mohamed, and Hinton in 2013 when they applied it to speech recognition. Graves et al experimented with 1-5 stacked LSTM layers, 250-622 hidden units per LSTM, training a little over a 100 epochs with an Adam Optimizer on recorded, sequential voice input. They discovered that performance improved by adding more layers but degraded after the network was deeper than 5 layers and that network depth had more effect on performance than layer size (number of hidden units used).
+
+#### Bidirectional LSTMs
+
+Bidirectional LSTMs analyze an input sequence from both directions - going forward and backwards in time, to make better predictions at the current time step. This may seem counterintuitive at first but imagine a movie review. Being able to see what the next 10 words in the review may help you better determine if the person is content or discontent with the movie. Expanding this example to our time series activity data, imagine we are just analyzing acceleration in the x-dimension. Looking at the last 10 readings, we may see acceleration is increasing and can use this information to guess the participant is walking forward. But the next 10 readings show decreasing acceleration, so it turns out that the participant was actually about to sit down. If our network is able to look ahead a few readings into the future, it can make better predictions about what activity the participant is currently performing. This bidirectional dependency exists in our time series data because future sensor readings can inform present ones in the same way that past readings do.
+
+Bidirectional properties on human activity data was explored by both Hernandez et al and Yu et al where they were able to achieve almost 93% average accuracy in classifying the six types of activities in the dataset. Bidirectional LSTMs are often combined with deep, stacked LSTMs to further improve performance.
+
 ### Citations
 
 1. Chetty, Girija, Matthew White, and Farnaz Akther. "Smartphone based data mining for human activity recognition." Procedia Computer Science 46 (2015): 1181-1187.
